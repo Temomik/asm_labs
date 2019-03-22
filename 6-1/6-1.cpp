@@ -1,10 +1,13 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <conio.h>
 #include <math.h>
 
-#define SMART_INPUT(type,number,min,max) while (!scanf_s(type,&number) || !number || (min == max)?false:(number < min || number > max)) rewind(stdin);\
-rewind(stdin);
+#define SMART_INPUT(type,number,min,max)\
+	while (!scanf_s(type,&number) || !number || number < (min) || number > max) rewind(stdin);\
+	rewind(stdin);
+
 
 int main() {
 	printf("Input size of array:\n");
@@ -18,28 +21,30 @@ int main() {
 		return 1;
 	for (int i = 0; i < arraySize; i++) {
 		printf("Enter %hu element:\n",i+1);
-		SMART_INPUT("%f", array[i], 0,0);
+		SMART_INPUT("%f", array[i], (-2147483647), 2147483648);
 	}
-	printf("array %f",array[0]);
+
 	double result = 0;
-	int i = 0;
-	arraySize--;
 	_asm {
 		xor ecx,ecx
 		mov cx,arraySize
 		finit
 		mov eax,array
-		fld [eax]
-		add eax, 4
+		fld result
 		start:
 			fadd [eax]
 			add eax,4
-		loop start
-			fst result
+			cmp cx,0
+			dec cx
+			jnz start
+		fst result
+
+
 		fwait
 	}
-	printf("\nResult is: %lf", result);
+	printf("\nResult is: %.2lf\n", result);
 	free(array);
 	system("pause");
 	return 0;
+
 }
