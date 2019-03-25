@@ -270,7 +270,7 @@ calculate_row_num_proc proc near
 
     copy_file_name_from_commandline proc near
         pusha
-        mov si,82h
+        mov si,81h
         mov ah,62h
         int 21h
         lea di,cmd_paramters+2
@@ -278,7 +278,11 @@ calculate_row_num_proc proc near
         xor cx,cx
         mov cx,128
         xor bx,bx
+        space_skip:
+        inc si
         copy_cycle:
+        cmp byte ptr es:[si]," "
+            je space_skip
         mov ax,[es:si[bx]]
         mov di[bx],ax
         ; putchar di[bx];
